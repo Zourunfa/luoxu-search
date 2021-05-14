@@ -4,6 +4,7 @@ import axios, { AxiosInstance } from "axios"
 // - repo: https://github.com/lilydjwg/luoxu
 // - example deployment:
 //   - https://lab.lilydjwg.me/luoxu/search?g=1031857103&q=wps
+// console.log();
 
 export type MessageResult = {
   id: number
@@ -30,6 +31,8 @@ export class LuoxuClient {
 
   constructor(opts: { base_url: string }) {
     this.base_url = opts.base_url
+    console.log(this.base_url);
+
   }
 
   get requester(): AxiosInstance {
@@ -55,13 +58,17 @@ export class LuoxuClient {
         q: query,
       },
     })
+    // console.log(data);
 
     return data
   }
 
   async groups(): Promise<Array<GroupResult>> {
     const { data } = await this.requester.get(`/groups`)
+    // console.log(data);
 
     return data.groups
   }
+
+
 }

@@ -15,6 +15,7 @@
     "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/postcss7-compat": "^2.1.2",
     "@tailwindcss/typography": "^0.4.0",
+    "@vue/cli-shared-utils": "^4.5.13",
     "autoprefixer": "^9.8.6",
     "axios": "^0.21.1",
     "js-base64": "^3.6.0",
@@ -24,6 +25,9 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
+    "@babel/code-frame": "^7.12.13",
+    "@babel/core": "^7.14.2",
+    "@babel/preset-env": "^7.14.2",
     "@vue/cli-plugin-router": "~4.5.12",
     "@vue/cli-plugin-typescript": "~4.5.12",
     "@vue/cli-service": "~4.5.12",

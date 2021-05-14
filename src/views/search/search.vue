@@ -75,6 +75,7 @@ export default defineComponent({
         query: props.query,
       })
     )
+    // console.log(state)
 
     onMounted(async () => {
       await state.search()
