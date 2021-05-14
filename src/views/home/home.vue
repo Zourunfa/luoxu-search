@@ -66,6 +66,7 @@ export default defineComponent({
     onMounted(async () => {
       await state.init()
     })
+    // console.log(state)
 
     async function search(): Promise<void> {
       if (!selected_group_id.value) return

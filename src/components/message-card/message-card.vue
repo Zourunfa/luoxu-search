@@ -5,7 +5,6 @@
       :src="`https://lab.lilydjwg.me/luoxu/avatar/${message.from_id}`"
       alt="头图"
       class="rounded-full h-16 w-16 flex items-center justify-center... self-end"
-      ref="img_ref"
       onerror="this.src='https://lab.lilydjwg.me/luoxu/avatar/127308807'"
     />
     <div id="message-card">
@@ -54,14 +53,14 @@ export default defineComponent({
   },
   setup(props, context) {
     // console.log(props)
-    // console.log(props.message)
-    let img_ref = ref(null)
-    let defaultImg = "this.src=https://lab.lilydjwg.me/luoxu/avatar/127308807"
-    onMounted(() => {
-      console.log(img_ref.value)
-    })
-
-    return { img_ref, defaultImg }
+    // console.log(props.message.time)
+    // console.log(props.message.from_name)
+    // let img_ref = ref(null)
+    // let defaultImg = "this.src=https://lab.lilydjwg.me/luoxu/avatar/127308807"
+    // onMounted(() => {
+    //   console.log(img_ref.value)
+    // })
+    // return { img_ref, defaultImg }
   },
 })
 </script>
@@ -89,20 +88,4 @@ export default defineComponent({
   border-radius: 32px 0 0 0;
   color: skyblue;
 }
-
-#img {
-  position: relative;
-}
-
-/* #img:after {
-  content: url("https://lab.lilydjwg.me/luoxu/avatar/127308807");
-  display: block;
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-} */
 </style>

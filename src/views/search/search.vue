@@ -23,12 +23,37 @@
             </div>
           </form>
         </div>
-
-        <h1 class="md:px-44 px-3 pt-1 text-gray-800">
-          @{{ state.group.pub_id }}
-        </h1>
+        <div class="flex">
+          <div>
+            <h1 class="md:px-44 px-3 pt-1 text-gray-800">
+              @{{ state.group.pub_id }}
+            </h1>
+          </div>
+          <div>
+            <div style="position: absolute; z-index: 999">
+              <!-- <button
+              class="block h-10 w-48 rounded-xl overflow-hidden border-2 border-gray-600 focus:outline-none focus:border-white"
+            >
+              按时间
+            </button> -->
+              <drop-down title="按时间">
+                <drop-item
+                  @click="search_bytime(24)"
+                  text="过去一天"
+                ></drop-item>
+                <drop-item @click="search_bytime(168)" text="过去一周">
+                </drop-item>
+                <drop-item @click="search_bytime(730)" text="过去一月">
+                </drop-item>
+                <drop-item @click="search_bytime(8784 / 2)" text="过去半年">
+                </drop-item>
+                <drop-item @click="search_bytime(8784)" text="过去一年">
+                </drop-item>
+              </drop-down>
+            </div>
+          </div>
+        </div>
       </div>
-
       <div v-if="state.messages" class="md:px-44 px-3">
         <div class="px-1 py-2 text-gray-500">
           找到 {{ state.messages.length }} 条消息 --
@@ -60,6 +85,8 @@ export default defineComponent({
     "search-loading": require("@/views/search/search-loading.vue").default,
     "icon-search-circle": require("@/components/icons/icon-search-circle.vue")
       .default,
+    "drop-down": require("@/components/drop-down").default,
+    "drop-item": require("@/components/drop-item").default,
   },
   props: {
     group_id: { type: Number, required: true },
@@ -75,10 +102,10 @@ export default defineComponent({
         query: props.query,
       })
     )
-    // console.log(state)
 
     onMounted(async () => {
       await state.search()
+      // console.log(state.messages)
     })
 
     async function search(): Promise<void> {
@@ -94,7 +121,19 @@ export default defineComponent({
       }
     }
 
-    return { state, search }
+    async function search_bytime(time: number): Promise<void> {
+      const query = {
+        g: props.group_id.toString(),
+        q: state.query,
+      }
+
+      await state.search_bytime(time)
+
+      if (query.g !== route.query.g || query.q !== route.query.q) {
+        router.push({ path: "/search", query })
+      }
+    }
+    return { state, search, search_bytime }
   },
 })
 </script>
