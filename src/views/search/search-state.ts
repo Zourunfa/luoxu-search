@@ -38,8 +38,10 @@ export class SearchState {
       this.messages = null
     }
   }
-  // 按时间搜索
-  async search_bytime(time: number): Promise<void> {
+
+
+
+  async search_byuser_time(username: string, time: number = 10000): Promise<void> {
     const result = await client.search({
       group_id: this.group_id,
       query: this.query,
@@ -51,6 +53,7 @@ export class SearchState {
     this.group = group
 
     if (this.query) {
+      console.log(time);
 
       let res = result.messages.filter(message => {
         let now_time = new Date().getTime()
@@ -59,39 +62,15 @@ export class SearchState {
         return time > perid
       })
 
-      this.messages = res.map((message) => {
-        return Message.from_message_result_and_group({
-          ...message,
-          group,
+      if (username) {
+        res = res.filter(message => {
+          let leng = username.length
+          let mes_name = message.from_name.slice(0, leng)
+          return mes_name === username
         })
       }
-      )
-    } else {
-      this.messages = null
-    }
 
-  }
-
-  // 按用户搜索
-  async search_byuser(username: string): Promise<void> {
-    const result = await client.search({
-      group_id: this.group_id,
-      query: this.query,
-    })
-    // console.log(result);
-
-    const group = Group.from_search_result(result)
-
-    this.group = group
-
-    if (this.query) {
-      let res = result.messages.filter(message => {
-        let leng = username.length
-        let mes_name = message.from_name.slice(0, leng)
-        return mes_name === username
-      })
-      console.log(res);
-
+      // console.log(res);
       this.messages = res.map((message) => {
         return Message.from_message_result_and_group({
           ...message,

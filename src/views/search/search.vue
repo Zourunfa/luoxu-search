@@ -31,20 +31,26 @@
           <!-- <div> -->
           <div class="pt-1" style="position: absolute; z-index: 999">
             <drop-down title="按时间">
-              <drop-item @click="search_bytime(24)" text="过去一天"></drop-item>
-              <drop-item @click="search_bytime(168)" text="过去一周">
+              <drop-item
+                @click="get_filter(username, 24)"
+                text="过去一天"
+              ></drop-item>
+              <drop-item @click="get_filter(username, 168)" text="过去一周">
               </drop-item>
-              <drop-item @click="search_bytime(730)" text="过去一月">
+              <drop-item @click="get_filter(username, 730)" text="过去一月">
               </drop-item>
-              <drop-item @click="search_bytime(8784 / 2)" text="过去半年">
+              <drop-item
+                @click="get_filter(username, 8478 / 2)"
+                text="过去半年"
+              >
               </drop-item>
-              <drop-item @click="search_bytime(8784)" text="过去一年">
+              <drop-item @click="get_filter(username, 8478)" text="过去一年">
               </drop-item>
             </drop-down>
           </div>
           <!-- </div> -->
           <div class="pt-1">
-            <form @submit.prevent="search_user(username)">
+            <form @submit.prevent="get_filter(username, _time)">
               <div
                 class="h-10 flex w-full border-2 border-gray-300 rounded-lg shadow-md"
               >
@@ -83,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, onMounted, ref } from "vue"
+import { defineComponent, PropType, reactive, onMounted, ref, watch } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { SearchState as State } from "./search-state"
 
@@ -105,6 +111,7 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const username = ref()
+    let _time = ref()
     const state = reactive<State>(
       new State({
         group_id: props.group_id,
@@ -114,9 +121,19 @@ export default defineComponent({
 
     onMounted(async () => {
       await state.search()
-      // console.log(state.messages)
-      console.log(username.value)
     })
+    // watch(_time,()=>{
+
+    // })
+
+    let get_filter = (username: string, time: number) => {
+      console.log(time)
+
+      _time.value = time
+      console.log(_time.value)
+
+      search_byuser_andtime(username, time)
+    }
 
     async function search(): Promise<void> {
       const query = {
@@ -131,32 +148,55 @@ export default defineComponent({
       }
     }
 
-    async function search_bytime(time: number): Promise<void> {
+    // async function search_bytime(time: number): Promise<void> {
+    //   const query = {
+    //     g: props.group_id.toString(),
+    //     q: state.query,
+    //   }
+
+    //   await state.search_bytime(time)
+
+    //   if (query.g !== route.query.g || query.q !== route.query.q) {
+    //     router.push({ path: "/search", query })
+    //   }
+    // }
+
+    // async function search_user(username: string): Promise<void> {
+    //   const query = {
+    //     g: props.group_id.toString(),
+    //     q: state.query,
+    //   }
+
+    //   await state.search_byuser(username)
+
+    //   if (query.g !== route.query.g || query.q !== route.query.q) {
+    //     router.push({ path: "/search", query })
+    //   }
+    // }
+
+    async function search_byuser_andtime(
+      username: string,
+      time: number = 10000
+    ) {
       const query = {
         g: props.group_id.toString(),
         q: state.query,
       }
 
-      await state.search_bytime(time)
+      await state.search_byuser_time(username, time)
 
       if (query.g !== route.query.g || query.q !== route.query.q) {
         router.push({ path: "/search", query })
       }
     }
-
-    async function search_user(username: string): Promise<void> {
-      const query = {
-        g: props.group_id.toString(),
-        q: state.query,
-      }
-
-      await state.search_byuser(username)
-
-      if (query.g !== route.query.g || query.q !== route.query.q) {
-        router.push({ path: "/search", query })
-      }
+    return {
+      state,
+      search,
+      username,
+      search_byuser_andtime,
+      _time,
+      get_filter,
     }
-    return { state, search, search_bytime, username, search_user }
   },
 })
 </script>
