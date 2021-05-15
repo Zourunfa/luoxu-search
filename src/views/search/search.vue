@@ -16,41 +16,50 @@
                 type="text"
                 required
               />
-
               <button class="p-1 my-2 font-bold">
                 <icon-search-circle class="text-gray-500" />
               </button>
             </div>
           </form>
         </div>
-        <div class="flex">
+        <div class="flex justify-around">
           <div>
-            <h1 class="md:px-44 px-3 pt-1 text-gray-800">
+            <h1 class="md:px-33 px-11 pt-2 text-gray-800">
               @{{ state.group.pub_id }}
             </h1>
           </div>
-          <div>
-            <div style="position: absolute; z-index: 999">
-              <!-- <button
-              class="block h-10 w-48 rounded-xl overflow-hidden border-2 border-gray-600 focus:outline-none focus:border-white"
-            >
-              按时间
-            </button> -->
-              <drop-down title="按时间">
-                <drop-item
-                  @click="search_bytime(24)"
-                  text="过去一天"
-                ></drop-item>
-                <drop-item @click="search_bytime(168)" text="过去一周">
-                </drop-item>
-                <drop-item @click="search_bytime(730)" text="过去一月">
-                </drop-item>
-                <drop-item @click="search_bytime(8784 / 2)" text="过去半年">
-                </drop-item>
-                <drop-item @click="search_bytime(8784)" text="过去一年">
-                </drop-item>
-              </drop-down>
-            </div>
+          <!-- <div> -->
+          <div class="pt-1" style="position: absolute; z-index: 999">
+            <drop-down title="按时间">
+              <drop-item @click="search_bytime(24)" text="过去一天"></drop-item>
+              <drop-item @click="search_bytime(168)" text="过去一周">
+              </drop-item>
+              <drop-item @click="search_bytime(730)" text="过去一月">
+              </drop-item>
+              <drop-item @click="search_bytime(8784 / 2)" text="过去半年">
+              </drop-item>
+              <drop-item @click="search_bytime(8784)" text="过去一年">
+              </drop-item>
+            </drop-down>
+          </div>
+          <!-- </div> -->
+          <div class="pt-1">
+            <form @submit.prevent="search_user(username)">
+              <div
+                class="h-10 flex w-full border-2 border-gray-300 rounded-lg shadow-md"
+              >
+                <input
+                  v-model="username"
+                  placeholder="按用户"
+                  class="w-full p-0.5 m-1 border-none"
+                  type="text"
+                  required
+                />
+                <button class="font-bold">
+                  <icon-search-circle class="text-gray-500" />
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -74,7 +83,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, onMounted } from "vue"
+import { defineComponent, PropType, reactive, onMounted, ref } from "vue"
 import { useRouter, useRoute } from "vue-router"
 import { SearchState as State } from "./search-state"
 
@@ -95,7 +104,7 @@ export default defineComponent({
   setup(props) {
     const router = useRouter()
     const route = useRoute()
-
+    const username = ref()
     const state = reactive<State>(
       new State({
         group_id: props.group_id,
@@ -106,6 +115,7 @@ export default defineComponent({
     onMounted(async () => {
       await state.search()
       // console.log(state.messages)
+      console.log(username.value)
     })
 
     async function search(): Promise<void> {
@@ -133,7 +143,20 @@ export default defineComponent({
         router.push({ path: "/search", query })
       }
     }
-    return { state, search, search_bytime }
+
+    async function search_user(username: string): Promise<void> {
+      const query = {
+        g: props.group_id.toString(),
+        q: state.query,
+      }
+
+      await state.search_byuser(username)
+
+      if (query.g !== route.query.g || query.q !== route.query.q) {
+        router.push({ path: "/search", query })
+      }
+    }
+    return { state, search, search_bytime, username, search_user }
   },
 })
 </script>
